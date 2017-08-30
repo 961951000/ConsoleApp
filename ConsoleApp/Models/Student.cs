@@ -1,18 +1,41 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ConsoleApp.Models
 {
-    public class Student
-    {
-        [Key]
-        public int StudentID { get; set; }
-        public string StudentName { get; set; }
+	[Table("Student", Schema = "dbo")]
+	public class Student
+	{
+		#region Model
+		[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity), Column("StudentId", Order = 0)]
+		public int? StudentId
+		{
+			set;
+			get;
+		}
 
-        //Foreign key for Standard
-        public int SchoolRefId { get; set; }
+		[Column("StudentName")]
+		public string StudentName
+		{
+			set;
+			get;
+		}
 
-        [ForeignKey("SchoolRefId")]
-        public School School { get; set; }
-    }
+		[Column("SchoolRefId")]
+		public int? SchoolRefId
+		{
+			set;
+			get;
+		}
+
+	    [ForeignKey("SchoolRefId")]
+	    public School School { get; set; }
+
+        public override string ToString()
+		{
+			return "StudentId=" + StudentId + ",StudentName=" + StudentName + ",SchoolRefId=" + SchoolRefId;
+		}
+		#endregion Model
+	}
 }

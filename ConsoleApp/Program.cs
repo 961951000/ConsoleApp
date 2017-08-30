@@ -11,8 +11,12 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var result = DbHelper.Insert();
-            Console.WriteLine(result);
+            var db = new DbHelper();
+            db.Insert();
+            db.Delete();
+            db.Update();
+            var school = db.Select();
+            Console.WriteLine(school);
             Console.ReadLine();
         }
     }

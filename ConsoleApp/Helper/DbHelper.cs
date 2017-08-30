@@ -10,63 +10,68 @@ namespace ConsoleApp.Helper
 {
     public class DbHelper
     {
-        public static readonly DefaultDbContext _db = new DefaultDbContext();
-        public static int Insert()
+        private readonly DefaultDbContext _db = new DefaultDbContext();
+        public int Insert()
         {
-            //添加学校
-            _db.School.Add(new School()
+            var school = new School
             {
-                SchoolName = "学校"
-            });
+                SchoolName = "School"
+            };
 
-            //添加学生
-            _db.Student.AddRange(new Student[] {
-                new Student()
+            var students = new[] {
+                new Student
                 {
-                StudentName = "学生1",
+                    StudentName = "Student1",
+                    School = school
                 },
-                new Student()
+                new Student
                 {
-                StudentName = "学生2",
+                    StudentName = "Student2",
+                    School = school
                 }
-            });
+            };
+            _db.Student.AddRange(students);
 
-            //找到学校  
-            School school = _db.School.FirstOrDefault();
+            return _db.SaveChanges();
+        }
 
-            //找到学生  
-            IEnumerable<Student> students = _db.Student;
-
-            //给学生添加学校 
-            foreach (var student in students)
+        public int Delete()
+        {
+            var school = _db.School.FirstOrDefault();
+            if (school != null)
             {
-                //给学生添加学校 
-                student.School = school;
-                student.SchoolRefId = school.SchoolId;
+                var students = _db.Student.Where(x => x.SchoolRefId == school.SchoolId);
+                _db.Student.RemoveRange(students);
+                _db.School.Remove(school);
             }
 
-            //让学校知道有哪些学生选择了它  
-            school.Students = students;
+            return _db.SaveChanges();
+        }
+
+        public int Update()
+        {
+            var school = _db.School.FirstOrDefault();
+
+            if (school != null)
+            {
+                school.SchoolName = "ShanghaiSchool";
+                foreach (var student in _db.Student.Where(x => x.SchoolRefId == school.SchoolId))
+                {
+                    student.StudentName = $"Shanghai{student.StudentName}";
+                }
+            }
 
             return _db.SaveChanges();
         }
 
-        public static int Delete()
+        public School Select()
         {
-
-            return _db.SaveChanges();
-        }
-
-        public static int Update()
-        {
-
-            return _db.SaveChanges();
-        }
-
-        public static int Select()
-        {
-
-            return _db.SaveChanges();
+            var school = _db.School.FirstOrDefault();
+            if (school != null)
+            {
+                school.Students = _db.Student.Where(x => x.SchoolRefId == school.SchoolId);
+            }
+            return _db.School.FirstOrDefault();
         }
     }
 }
