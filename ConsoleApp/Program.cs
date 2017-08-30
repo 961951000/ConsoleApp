@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleApp.Helper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,9 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            var result = DbHelper.Insert();
+            Console.WriteLine(result);
+            Console.ReadLine();
         }
     }
 }
